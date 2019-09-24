@@ -119,14 +119,8 @@ Now, there are checks to prevent command injection. In particular:
 ```c
 invalidChars = 0x60273b7c;
 ```
-Is used to check for som einvalid characters like \` ' ; | but ***\&*** is not present in the list so if the parameter mount is equal to 
-```console
-&ping -c 10 192.168.1.172&
-```
-the check will result allow the execution of 
-```console
-/statusapi/bin/umount -lf &ping -c 10 192.168.1.172&
-```
+Is used to check for som einvalid characters like \` ' ; | but ***\&*** is not present in the list so if the parameter mount is equal to `&ping -c 10 192.168.1.172&` the check will result allow the execution of `/statusapi/bin/umount -lf &ping -c 10 192.168.1.172&`.
+
 The mount command will fail but the following ping will be executed.
 
 The patch published simplifies the code eliminating the checks for special characters by simply checking if the folder exists.
