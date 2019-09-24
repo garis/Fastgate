@@ -1,4 +1,8 @@
-# Fastgate
+# TLDR
+This is a brief report of a vulnerability (CVE-2019-12489) discovered playing around with a Fastgate modem/router of Fastweb and Ghidra.
+The vulnerability allow the execution of a command injection through an http request and can be used to enable an SSH shell.
+
+# Firmware collection and extraction
 
 All the firmware files are located in http://59.0.121.191:8080/ACS-server/file/FILENAME
 
@@ -58,6 +62,8 @@ We now have the filesystem in `bump/rootfs_ubifs/`
 
 Now we can proceed a bit further in the analysis.
 
+# Analysis
+
 Looking around in the filesystem we can see that the web gui is managed by mini_httpd:
 
 ```console
@@ -83,17 +89,19 @@ web/js/status.js:       "url":http://192.168.101.93/STATUSAPI/status.cgi,
 
 So, using Ghidra, we can start looking in the `status.cgi`
 
-Now I describe what's is really important, skipping a lot of details.
+Skipping a lot of details, the vulnerability is described below.
+
+# Expoit
 
 The first thing to look is for a main method like the one in this picture:
 
 ![Image of main](images/main.png)
 
-We can see that setup is called. After a bit of looking around run_service(...) seems the core of all the functionalities.
+We can see that setup is called. After a bit of looking around ***run_service(...)*** seems the core of all the functionalities.
 
 ![Image of setup](images/setup.png)
 
-Looking for ***&service_tab*** we can see that some specific strings are linked to actual code executed by run_service(...)
+Looking for ***&service_tab*** we can see that some specific strings are linked to actual code executed by ***run_service(...)***
 
 ![Image of services](images/services.png)
 
@@ -119,12 +127,25 @@ Now, there are checks to prevent command injection. In particular:
 ```c
 invalidChars = 0x60273b7c;
 ```
-Is used to check for som einvalid characters like \` ' ; | but ***\&*** is not present in the list so if the parameter mount is equal to `&ping -c 10 192.168.1.172&` the check will result allow the execution of `/statusapi/bin/umount -lf &ping -c 10 192.168.1.172&`.
+Is used to check for some invalid characters like \` ' ; | but ***\&*** is not present in the list so if the parameter mount is equal to `&ping -c 10 192.168.1.172&` the check will result allow the execution of `/statusapi/bin/umount -lf &ping -c 10 192.168.1.172&`.
 
 The mount command will fail but the following ping will be executed.
 
+# The official path
 The patch published simplifies the code eliminating the checks for special characters by simply checking if the folder exists.
 
 ![Image of usbremovepatched](images/usbremovepatched.png)
 
 The code to exploit ths vulnerabilty and enable ssh is in fastwebEnableSSH.py https://github.com/garis/Fastgate/blob/master/fastwebEnableSSH.py
+
+# Responsible Disclosure timing with Fastweb
+
+* 25 May 2019: initial discovery and testing
+* 26 May 2019: Responsible Disclosure following https://www.fastweb.it/corporate/responsible-disclosure/
+* 27 May 2019: Confirmation of contact, more info will be available after some analysis by Fastweb
+* 26 Jun 2019: Patch is in testing.
+* 25 Jul 2019: Patch is in testing..
+* 21 Aug 2019: Patch is in testing...
+* 23 Sep 2019: Come on Fastweb give me at least the patched firmware
+* 24 Sep 2019: The patched firmware is 0.00.89_FW_200_Askey (patch confirmed after downloading the firmware)
+* Final step on going
