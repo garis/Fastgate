@@ -87,35 +87,29 @@ Now I describe what's is really important, skipping a lot of details.
 
 The first thing to look is for a main method like the one in this picture:
 
-***LINK PICTURE MAIN.PNG***
+![Image of main](images/main.png)
 
 We can see that setup is called. After a bit of looking around run_service(...) seems the core of all the functionalities.
 
-***LINK PICTURE SETUP.PNG***
+![Image of setup](images/setup.png)
 
 Looking for ***&service_tab*** we can see that some specific strings are linked to actual code executed by run_service(...)
 
-***LINK PICTURE SERVICES.PNG***
+![Image of services](images/services.png)
 
 After looking at these methods one by one I stubmle accross ***usb_remove***
 
-***LINK PICTURE usbremove.PNG***
+![Image of usbremove](images/usbremove.png)
 
 In details:
-
-* 
 ```c
 mountVal = (char *)find_val(httpparams,"mount");
 ```
 Takes the string in the url request directly in a variable
-
-* 
 ```c
 sprintf((char *)&mountLocation,"/mnt/%s",mountVal);
 ```
 Create a complete path given the parameter in the URL request
-
-* 
 ```c
 mountLocation
 ```
@@ -125,7 +119,7 @@ Now, there are checks to prevent command injection. In particular:
 ```c
 invalidChars = 0x60273b7c;
 ```
-Is used to check for som einvalid characters like  ` ' ; | but & is not present in the list so if the parameter mount is equal to 
+Is used to check for som einvalid characters like \` ' ; | but ***\&*** is not present in the list so if the parameter mount is equal to 
 ```console
 &ping -c 10 192.168.1.172&
 ```
@@ -135,7 +129,7 @@ the check will result allow the execution of
 ```
 The mount command will fail but the following ping will be executed.
 
-The patch published simpily the code eliminating the checks for special characters by simply checcking if the folder exists.
+The patch published simplifies the code eliminating the checks for special characters by simply checking if the folder exists.
 
-***LINK PICTURE usbremovepatched.png***
+![Image of usbremovepatched](images/usbremovepatched.png)
 
