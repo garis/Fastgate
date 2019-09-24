@@ -133,3 +133,4 @@ The patch published simplifies the code eliminating the checks for special chara
 
 ![Image of usbremovepatched](images/usbremovepatched.png)
 
+The code to exploit ths vulnerabilty and enable ssh is in fastwebEnableSSH.py https://github.com/garis/Fastgate/blob/master/fastwebEnableSSH.py
