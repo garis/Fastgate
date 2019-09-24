@@ -1,6 +1,6 @@
 # Fastgate
 
-All the firware are located in http://59.0.121.191:8080/ACS-server/file/FILENAME
+All the firmware files are located in http://59.0.121.191:8080/ACS-server/file/FILENAME
 
 Where FILENAME is equal to: 
 * 0.00.89_FW_200_Askey
