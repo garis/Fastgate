@@ -42,16 +42,16 @@ The value ***57147506*** is what we need.
 Looking at the output of `binwalk` we can see that the UBI part is starting at ***3276894***. With these two values we can use `dd` like this:
 
 ```console
-dd if=0.00.89_FW_200_Askey of=0.00.89_FW_200_Askey.UBI bs=1 skip=3276894 count=57147506
+$ dd if=0.00.89_FW_200_Askey of=0.00.89_FW_200_Askey.UBI bs=1 skip=3276894 count=57147506
 ```
 
 Now we can use ubidump (after some initial configuration depending on the system config):
 
 ```console
-git clone https://github.com/nlitsme/ubidump.git
-sudo pip install crcmod
-yay -S python-lzo
-python ubidump/ubidump.py -s bump 0.00.89_FW_200_Askey.UBI
+$ git clone https://github.com/nlitsme/ubidump.git
+$ sudo pip install crcmod
+$ yay -S python-lzo
+$ python ubidump/ubidump.py -s bump 0.00.89_FW_200_Askey.UBI
 ```
 
 We now have the filesystem in `bump/rootfs_ubifs/`
