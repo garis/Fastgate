@@ -148,4 +148,4 @@ The code to exploit ths vulnerabilty and enable ssh is in fastwebEnableSSH.py ht
 * 21 Aug 2019: Patch is in testing...
 * 23 Sep 2019: Come on Fastweb give me at least the patched firmware
 * 24 Sep 2019: The patched firmware is 0.00.89_FW_200_Askey (patch confirmed after downloading the firmware)
-* Final step on going
+* 11 Nov 2019: Patch deploy terminated
